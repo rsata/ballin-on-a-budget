@@ -2,15 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PendingTransactions from '../containers/PendingTransactions';
 
-const App = () => (
+const Layout = props => (
   <div>
     <h1>Ballin on a Budget</h1>
     <ul>
       <li><Link to='/pending'>Pending</Link></li>
-      <li><Link to='/finalized'>Finalized</Link></li>
+      <li><Link to='/final'>Final</Link></li>
     </ul>
-    <PendingTransactions />
+    {props.location.pathname === '/' ? <PendingTransactions /> : undefined}
   </div>
 );
 
-export default App;
+export default Layout;
