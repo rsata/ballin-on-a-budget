@@ -8,7 +8,7 @@ const PendingTransaction = props => {
         <li>{ props.data.amount }</li>
         <li>{ props.data.date }</li>
         <button onClick={() => props.finalizeTransaction(props.data.id)}>{String.fromCharCode(10003)}</button>
-        <button onClick={() => props.deleteTransaction(props.index)}>{String.fromCharCode(10007)}</button>
+        <button onClick={() => props.deleteTransaction(props.data.id)}>{String.fromCharCode(10007)}</button>
       </ul>
     </div>
   );

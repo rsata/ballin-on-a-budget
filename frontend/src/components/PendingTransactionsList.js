@@ -1,16 +1,17 @@
 import React from 'react';
 import PendingTransaction from './PendingTransaction';
 
-const PendingTransactionsList = transactions => {
+const PendingTransactionsList = props => {
   // console.log(transactions.pendingTransactions.data.map(t => t)); //cool... 
+  console.log(props);
   return (
     <div>
-      {transactions.pendingTransactions.data.map((t,i) => {
+      {props.data.pendingTransactions.map((t,i) => {
         return <PendingTransaction 
           key={t.id}
           data={t} 
-          finalizeTransaction={transactions.finalizeTransaction} 
-          deleteTransaction={transactions.deleteTransaction} 
+          finalizeTransaction={props.finalizeTransaction} 
+          deleteTransaction={props.deleteTransaction} 
           index={i}
         />;
       })}

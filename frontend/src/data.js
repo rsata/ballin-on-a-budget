@@ -31,4 +31,13 @@ const pendingTransactions = [
     }
 ];
 
-export default pendingTransactions;
+const finalizedTransactions = [
+    {
+        id: 8,
+        amount: 12.14,
+        date: '2/2/2018',
+        name: 'SOME FINALIZED PLACE'
+    }
+];
+
+export default { pendingTransactions, finalizedTransactions };

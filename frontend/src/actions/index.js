@@ -3,9 +3,9 @@ export const finalizeTransaction = transactionId => ({
   transactionId
 });
 
-export const deleteTransaction = index => ({
+export const deleteTransaction = transactionId => ({
   type: 'DELETE_TRANSACTION',
-  index
+  transactionId
 });
 
 // add db calls
