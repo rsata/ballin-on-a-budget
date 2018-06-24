@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import PendingTransactionsList from '../components/PendingTransactionsList';
+import PendingTransactionsList from '../components/PendingTransactions';
 import { finalizeTransaction, deleteTransaction } from '../actions';
 
 const mapStateToProps = state => ({

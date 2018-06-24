@@ -2,7 +2,6 @@ import React from 'react';
 import PendingTransaction from './PendingTransaction';
 
 const PendingTransactionsList = props => {
-  // console.log(transactions.pendingTransactions.data.map(t => t)); //cool... 
   console.log(props);
   return (
     <div>
