@@ -8,4 +8,8 @@ export const deleteTransaction = transactionId => ({
   transactionId
 });
 
+export const addTransaction = transaction => ({
+  type: 'ADD_TRANSACTION',
+  transaction
+})
 // add db calls

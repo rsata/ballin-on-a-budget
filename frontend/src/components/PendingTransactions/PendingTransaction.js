@@ -2,7 +2,7 @@ import React from 'react';
 
 const PendingTransaction = props => {
   return (
-    <div>
+    <div>      
       <ul>
         <li>{ props.data.name }</li>
         <li>{ props.data.amount }</li>
