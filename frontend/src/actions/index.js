@@ -19,4 +19,8 @@ const getTransactionsApi = () => {
     .catch(err => console.log(err))
 }
 
+export const addTransaction = transaction => ({
+  type: 'ADD_TRANSACTION',
+  transaction
+})
 // add db calls

@@ -15,12 +15,16 @@ const PendingTransactionsList = (state = {
 
       newState = {
         pendingTransactions: state.pendingTransactions.filter(transaction => transaction.id !== action.transactionId),
-        finalizedTransactions: [...state.finalizedTransactions, finalizedTransaction[0]] // because filter returns an array
+        finalizedTransactions: [...state.finalizedTransactions, finalizedTransaction[0]] // because filter returns an array and transactionId should be unique. There's probably a better way to do this...
       };
       return newState;
     
       case 'ADD_TRANSACTION':
-      return state; // will do this later...
+      newState = {
+        ...state,
+        pendingTransactions: state.pendingTransactions.concat(action.transaction)
+      }
+      return newState; // will do this later...
     
       case 'DELETE_TRANSACTION':
       newState = {
