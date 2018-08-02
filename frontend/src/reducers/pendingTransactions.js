@@ -1,16 +1,18 @@
 import data from '../data';
 
-const PendingTransactionsList = (state = {
-  pendingTransactions: data.pendingTransactions,
-  finalizedTransactions: data.finalizedTransactions
-}, action) => {
+const PendingTransactionsList = (state={}, action) => {
   let newState;
   switch (action.type) {
 
-    case 'GET_PENDING_TRANSACTIONS':
-      return state;
+    case 'PENDING_GET_TRANSACTIONS':
+      console.log(action)
+      newState = {
+        ...state,
+        pendingTransactions: action.data
+      }
+      return newState;
     
-    case 'FINALIZE_TRANSACTION':
+    case 'PENDING_FINALIZE_TRANSACTION':
       const finalizedTransaction = state.pendingTransactions.filter(transaction => transaction.id === action.transactionId);
 
       newState = {
@@ -19,17 +21,17 @@ const PendingTransactionsList = (state = {
       };
       return newState;
     
-      case 'ADD_TRANSACTION':
+    case 'PENDING_ADD_TRANSACTION':
       newState = {
         ...state,
         pendingTransactions: state.pendingTransactions.concat(action.transaction)
       }
       return newState; // will do this later...
-    
-      case 'DELETE_TRANSACTION':
+  
+    case 'PENDING_DELETE_TRANSACTION':
       newState = {
         ...state,
-        pendingTransactions: state.pendingTransactions.filter(transaction => transaction.id !== action.transactionId)
+        pendingTransactions: state.pendingTransactions.filter(transaction => transaction.transaction_id !== action.transactionId)
       };
       return newState;
 

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import PendingTransactionsList from '../components/PendingTransactions';
-import { finalizeTransaction, deleteTransaction, addTransaction } from '../actions';
+import { finalizeTransaction, deleteTransaction, addTransaction, getTransactions } from '../actions';
 
 const mapStateToProps = state => ({
   data: state.pendingTransactions
@@ -9,8 +9,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   finalizeTransaction: transactionId => dispatch(finalizeTransaction(transactionId)),
   deleteTransaction: transactionId => dispatch(deleteTransaction(transactionId)),
-  getTransactions: getTransactionsApi,
-  addTransaction: transaction => {dispatch(addTransaction(transaction))}
+  addTransaction: transaction => dispatch(addTransaction(transaction)),
+  getTransactions: () => getTransactionsApi(dispatch)
 });
 
 export default connect(
@@ -18,11 +18,14 @@ export default connect(
   mapDispatchToProps
 )(PendingTransactionsList);
 
-const getTransactionsApi = () => {
+
+
+
+const getTransactionsApi = (dispatch) => {
   fetch('http://localhost:3001/get-transactions', {
     method: 'POST'
   })
-    .then(r => r.json)
-    .then(r => console.log(r))
+    .then(r => r.json())
+    .then(r => dispatch(getTransactions(r)))
     .catch(err => console.log(err))
 }

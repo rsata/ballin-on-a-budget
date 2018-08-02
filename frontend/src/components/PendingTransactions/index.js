@@ -4,8 +4,6 @@ import NewTransactionForm from '../NewTransactionForm';
 import moment from 'moment';
 
 const PendingTransactionsList = props => {
-  console.log(props);
-
   const submit = (values) => {
     const t = {
       id: moment().unix(), // meh. use this as an id for now
@@ -16,6 +14,8 @@ const PendingTransactionsList = props => {
     props.addTransaction(t);
   }
 
+  if (!props.data.pendingTransactions) return (<div><button onClick={props.getTransactions}>Get transactions</button>Loading...</div>)
+
   return (
     <div>
       <h3>Pending</h3>
@@ -23,7 +23,7 @@ const PendingTransactionsList = props => {
       <NewTransactionForm onSubmit={submit} />
       {props.data.pendingTransactions.map((t,i) => {
         return <PendingTransaction 
-          key={t.id}
+          key={i}
           data={t} 
           finalizeTransaction={props.finalizeTransaction} 
           deleteTransaction={props.deleteTransaction} 

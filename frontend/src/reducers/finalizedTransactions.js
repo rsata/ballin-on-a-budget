@@ -1,8 +1,6 @@
 import data from '../data';
 
-const FinalizedTransactionsList = (state = {
-  finalizedTransactions: data.finalizedTransactions
-}, action) => {
+const FinalizedTransactionsList = (state = {}, action) => {
   let newState;
   switch (action.type) {
     case 'GET_FINALIZED_TRANSACTIONS':

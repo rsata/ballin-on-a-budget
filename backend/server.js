@@ -119,11 +119,14 @@ app.get('/transactions', (req, res) => {
     .catch(e => {throw e})
 });
 
+// hardcode boa token for now...
+const boaToken = fs.readFileSync('./boa_token', 'utf8');
 app.post('/get-transactions', (req, res) => {
-  plaidClient.getTransactions(ACCESS_TOKEN, moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'), {}, (err, result) => {
+  plaidClient.getTransactions(boaToken, moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'), {offset: 0}, (err, result) => {
     if (err) console.log (err)
     const { transactions } = result;
-    console.log(transactions);
+    res.send(transactions)
+    console.log('sent');
   });
 })
 
