@@ -60,6 +60,8 @@ const queries = {
       let query =`
         INSERT INTO transactions (
           user_id,
+          transaction_status,
+          transaction_type,
           p_account_id,
           p_amount,
           p_category,
@@ -81,7 +83,9 @@ const queries = {
         ON CONFLICT ON CONSTRAINT transactions_p_transaction_id_key DO NOTHING
         ;
       `
-      let values = [user_id, p_account_id, p_amount, p_category, p_category_id, p_date, p_address, p_city, p_state, p_lat, p_lon, p_store_number, p_zip, p_name, p_pending, p_transaction_id, p_transaction_type];
+      let transaction_status = 0; // pending
+      let transaction_type = 0; // general
+      let values = [user_id, transaction_status, transaction_type, p_account_id, p_amount, p_category, p_category_id, p_date, p_address, p_city, p_state, p_lat, p_lon, p_store_number, p_zip, p_name, p_pending, p_transaction_id, p_transaction_type];
 
       pool.query(query, values, (err, res) => {
         if (!err) {resolve (res.rows)}

@@ -119,6 +119,14 @@ app.get('/transactions', (req, res) => {
     .catch(e => {throw e})
 });
 
+app.post('/get-transactions', (req, res) => {
+  plaidClient.getTransactions(ACCESS_TOKEN, moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'), {}, (err, result) => {
+    if (err) console.log (err)
+    const { transactions } = result;
+    console.log(transactions);
+  });
+})
+
 // webhook for 
 app.post('/update-transactions', (req, res) => {
   plaidClient.getTransactions(ACCESS_TOKEN, moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'), {

@@ -6,6 +6,7 @@ const PendingTransactionsList = props => {
   return (
     <div>
       <h3>Pending</h3>
+      <button onClick={props.getTransactions}>Get transactions</button>
       {props.data.pendingTransactions.map((t,i) => {
         return <PendingTransaction 
           key={t.id}
