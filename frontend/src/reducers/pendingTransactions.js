@@ -1,6 +1,9 @@
 import data from '../data';
 
-const PendingTransactionsList = (state={}, action) => {
+const PendingTransactionsList = (state={
+  pendingTransactions: [],
+  finalizedTransactions: []
+}, action) => {
   let newState;
   switch (action.type) {
 
@@ -12,11 +15,12 @@ const PendingTransactionsList = (state={}, action) => {
       }
       return newState;
     
-    case 'PENDING_FINALIZE_TRANSACTION':
-      const finalizedTransaction = state.pendingTransactions.filter(transaction => transaction.id === action.transactionId);
+    case 'PENDING_FINALIZE_TRANSACTION':      
+      const finalizedTransaction = state.pendingTransactions.filter(transaction => transaction.transaction_id === action.transactionId);
+      console.log(finalizedTransaction)
 
       newState = {
-        pendingTransactions: state.pendingTransactions.filter(transaction => transaction.id !== action.transactionId),
+        pendingTransactions: state.pendingTransactions.filter(transaction => transaction.transaction_id !== action.transactionId),
         finalizedTransactions: [...state.finalizedTransactions, finalizedTransaction[0]] // because filter returns an array and transactionId should be unique. There's probably a better way to do this...
       };
       return newState;
