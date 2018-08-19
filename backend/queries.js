@@ -30,6 +30,7 @@ const queries = {
         uuid uuid DEFAULT gen_random_uuid(),
         date_created timestamp DEFAULT now(),
         last_update timestamp DEFAULT now(),
+        transaction_status int,
         transaction_type int,
         p_account_id text NOT NULL,
         p_amount decimal,
@@ -55,7 +56,8 @@ const queries = {
       .catch(e => setImmediate(() => { throw e }))
   },
 
-  insertTransaction: (pool, user_id, p_account_id, p_amount, p_category, p_category_id, p_date, p_address, p_city, p_state, p_lat, p_lon, p_store_number, p_zip, p_name, p_pending, p_transaction_id, p_transaction_type ) => {
+  // insertTransaction: (pool, user_id, p_account_id, p_amount, p_category, p_category_id, p_date, p_address, p_city, p_state, p_lat, p_lon, p_store_number, p_zip, p_name, p_pending, p_transaction_id, p_transaction_type ) => {
+    insertTransaction: (pool, user_id, transaction) => {
     return new Promise ((resolve, reject) => {
       let query =`
         INSERT INTO transactions (
@@ -79,13 +81,35 @@ const queries = {
           p_transaction_id,
           p_transaction_type
         )        
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
         ON CONFLICT ON CONSTRAINT transactions_p_transaction_id_key DO NOTHING
         ;
       `
       let transaction_status = 0; // pending
       let transaction_type = 0; // general
-      let values = [user_id, transaction_status, transaction_type, p_account_id, p_amount, p_category, p_category_id, p_date, p_address, p_city, p_state, p_lat, p_lon, p_store_number, p_zip, p_name, p_pending, p_transaction_id, p_transaction_type];
+      let { account_id, amount, category, category_id, date, name, pending, transaction_id } = transaction;
+
+      let values = [
+        user_id
+        , transaction_status
+        , transaction_type
+        , account_id
+        , amount
+        , category
+        , category_id
+        , date
+        , transaction.location.address
+        , transaction.location.city
+        , transaction.location.state
+        , transaction.location.lat
+        , transaction.location.lon
+        , transaction.location.store_number
+        , transaction.location.zip
+        , name
+        , pending
+        , transaction_id
+        , transaction.transaction_type
+      ];
 
       pool.query(query, values, (err, res) => {
         if (!err) {resolve (res.rows)}
@@ -96,7 +120,7 @@ const queries = {
 
   getTransactions: (pool, user_id) => {
     return new Promise ((resolve, reject) => {
-      let query =`
+      let query = `
         SELECT * FROM transactions
         WHERE user_id = $1
         ;
@@ -107,6 +131,21 @@ const queries = {
         else {reject (err)}
       });
     });
+  },
+
+  finalizeTransaction: (pool, user_id, t_id) => {
+    return new Promise ((resolve, reject) => {
+      let query = `
+        UPDATE transactions 
+        SET transaction_status = 5
+        WHERE user_id = $1 AND p_transaction_id = $2
+      `
+      let values = [user_id, t_id]
+      pool.query(query, values, (err, res) => {
+        if (!err) {resolve (res.rows)}
+        else {reject (err)}
+      });
+    })
   }
 }
 

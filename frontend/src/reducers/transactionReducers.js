@@ -15,10 +15,10 @@ const TransactionsList = (state={
       return newState;
     
     case 'PENDING_FINALIZE_TRANSACTION':      
-      const finalizedTransaction = state.pendingTransactions.filter(transaction => transaction.transaction_id === action.transactionId);
+      const finalizedTransaction = state.pendingTransactions.filter(transaction => transaction.p_transaction_id === action.transactionId);
 
       newState = {
-        pendingTransactions: state.pendingTransactions.filter(transaction => transaction.transaction_id !== action.transactionId),
+        pendingTransactions: state.pendingTransactions.filter(transaction => transaction.p_transaction_id !== action.transactionId),
         finalizedTransactions: [...state.finalizedTransactions, finalizedTransaction[0]] // because filter returns an array and transactionId should be unique. There's probably a better way to do this...
       };
       console.log(newState)
@@ -36,7 +36,7 @@ const TransactionsList = (state={
     case 'PENDING_DELETE_TRANSACTION':
       newState = {
         ...state,
-        pendingTransactions: state.pendingTransactions.filter(transaction => transaction.transaction_id !== action.transactionId)
+        pendingTransactions: state.pendingTransactions.filter(transaction => transaction.p_transaction_id !== action.transactionId)
       };
       console.log(newState)
       return newState;

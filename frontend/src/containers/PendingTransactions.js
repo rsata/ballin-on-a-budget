@@ -10,7 +10,7 @@ const mapDispatchToProps = dispatch => ({
   finalizeTransaction: transactionId => dispatch(finalizeTransaction(transactionId)),
   deleteTransaction: transactionId => dispatch(deleteTransaction(transactionId)),
   addTransaction: transaction => dispatch(addTransaction(transaction)),
-  getTransactions: () => getTransactionsApi(dispatch)
+  getTransactions: () => api_getTransactions(dispatch)
 });
 
 export default connect(
@@ -21,9 +21,9 @@ export default connect(
 
 
 
-const getTransactionsApi = (dispatch) => {
+const api_getTransactions = (dispatch) => {
   fetch('http://localhost:3001/get-transactions', {
-    method: 'POST'
+    method: 'GET'
   })
     .then(r => r.json())
     .then(r => dispatch(getTransactions(r)))

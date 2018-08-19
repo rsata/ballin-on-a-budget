@@ -79,6 +79,67 @@ app.post('/get_access_token', (request, response) => {
   });
 });
 
+app.get('/transactions', (req, res) => {
+  const user_id = 1; // for now...
+  queries.getTransactions(pool, user_id)
+    .then(r => res.send(r))
+    .catch(e => {throw e})
+});
+
+
+app.get('/get-transactions', (req, res) => { 
+  queries.getTransactions(pool, 1)
+    .then(r => res.send(r))
+    .catch(err => console.log(err))
+})
+
+
+// hardcode tokens for now...
+const boaToken = fs.readFileSync('./boa_token', 'utf8');
+const allyToken = fs.readFileSync('./boa_token', 'utf8');
+const tokens = [boaToken, allyToken];
+
+app.post('/plaid-pull-transactions', (req, res) => {
+  const rangeStart = moment().startOf('month').format('YYYY-MM-DD');
+  const rangeEnd = moment().format('YYYY-MM-DD');
+  tokens.forEach(token => {
+    plaidClient.getTransactions(token, rangeStart, rangeEnd, {offset: 0}, (err, result) => {
+      if (err) console.log (err)
+      result.transactions.forEach(t => {
+        queries.insertTransaction(pool, 1, t)
+          .catch(err => console.log(err))
+      });
+
+    });
+  })
+});
+
+app.post('/finalize-transaction', (req, res) => {
+  console.log(req.body)
+  const t_id = req.body.transactionId;
+  queries.finalizeTransaction(pool, 1, t_id)
+    .then(r => res.send(r))
+    .catch(err => console.log(err))
+  })
+
+
+app.listen(3001);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.post('/test-webhook', (req, res) => {
   console.log(req.body.new_transactions);
   const { webhook_code, new_transactions } = req.body;
@@ -111,44 +172,3 @@ app.post('/test-webhook', (req, res) => {
     });
   }
 });
-
-app.get('/transactions', (req, res) => {
-  const user_id = 1; // for now...
-  queries.getTransactions(pool, user_id)
-    .then(r => res.send(r))
-    .catch(e => {throw e})
-});
-
-// hardcode boa token for now...
-const boaToken = fs.readFileSync('./boa_token', 'utf8');
-app.post('/get-transactions', (req, res) => {
-  plaidClient.getTransactions(boaToken, moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'), {offset: 0}, (err, result) => {
-    if (err) console.log (err)
-    const { transactions } = result;
-    res.send(transactions)
-    console.log('sent');
-  });
-})
-
-// webhook for 
-app.post('/update-transactions', (req, res) => {
-  plaidClient.getTransactions(ACCESS_TOKEN, moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'), {
-    count: new_transactions,
-    offset: 0,
-  }, (err, result) => {
-    // Handle err
-    const { transactions } = result;
-    console.log(transactions);
-    // save to db - id unique
-  });
-});
-
-const getTransactionsYTD = () => {
-  plaidClient.getTransactions(ACCESS_TOKEN, '2018-01-01', moment().format('YYYY-MM-DD'), {
-
-  }, (err, result) => {
-    // queries.insertTransaction(pool, )
-  })
-}
-
-app.listen(3001);
