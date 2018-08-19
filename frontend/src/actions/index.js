@@ -17,3 +17,8 @@ export const getTransactions = data => ({
   type: 'PENDING_GET_TRANSACTIONS',
   data
 });
+
+export const getFinalizedTransactions = data => ({
+  type: 'FINALIZED_GET_TRANSACTIONS',
+  data
+});

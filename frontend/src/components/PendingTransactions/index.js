@@ -4,6 +4,7 @@ import NewTransactionForm from '../NewTransactionForm';
 import moment from 'moment';
 
 const PendingTransactionsList = props => {
+  console.log(props)
   const submit = (values) => {
     const t = {
       id: moment().unix(), // meh. use this as an id for now

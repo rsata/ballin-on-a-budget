@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Layout from './Layout';
 import PendingTransactions from '../containers/PendingTransactions';
-import FinalTransactionsList from './FinalTransactions';
+import FinalizedTransactions from '../containers/FinalizedTransactions';
 
 const Root = ({ store }) => (
   <Provider store={store}>
@@ -13,7 +13,7 @@ const Root = ({ store }) => (
       <div>
         <Route path="/" component={Layout} />
         <Route path="/pending" component={PendingTransactions} />
-        <Route path="/final" component={FinalTransactionsList} />
+        <Route path="/final" component={FinalizedTransactions} />
       </div>
     </Router>
   </Provider>

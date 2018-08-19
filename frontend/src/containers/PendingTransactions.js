@@ -3,7 +3,7 @@ import PendingTransactionsList from '../components/PendingTransactions';
 import { finalizeTransaction, deleteTransaction, addTransaction, getTransactions } from '../actions';
 
 const mapStateToProps = state => ({
-  data: state.pendingTransactions
+  data: state.transactions
 });
 
 const mapDispatchToProps = dispatch => ({
