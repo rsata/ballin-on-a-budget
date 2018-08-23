@@ -1,0 +1,14 @@
+legend
+
+transaction_status
+0 = pending
+5 = finalized
+10 = deleted
+
+transaction_type
+0 = general
+5 = monthly
+10 = groceries
+15 = savings
+20 = random shit
+

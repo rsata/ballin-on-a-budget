@@ -7,10 +7,13 @@ const TransactionsList = (state={
   let newState;
   switch (action.type) {
 
-    case 'PENDING_GET_TRANSACTIONS':
+    case 'GET_TRANSACTIONS':
+      const pendingTransactions = action.data.filter(t => t.transaction_status === 0)
+      const finalizedTransactions = action.data.filter(t => t.transaction_status === 5)
       newState = {
         ...state,
-        pendingTransactions: action.data
+        pendingTransactions,
+        finalizedTransactions
       }
       return newState;
     

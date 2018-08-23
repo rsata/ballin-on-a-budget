@@ -79,21 +79,6 @@ app.post('/get_access_token', (request, response) => {
   });
 });
 
-app.get('/transactions', (req, res) => {
-  const user_id = 1; // for now...
-  queries.getTransactions(pool, user_id)
-    .then(r => res.send(r))
-    .catch(e => {throw e})
-});
-
-
-app.get('/get-transactions', (req, res) => { 
-  queries.getTransactions(pool, 1)
-    .then(r => res.send(r))
-    .catch(err => console.log(err))
-})
-
-
 // hardcode tokens for now...
 const boaToken = fs.readFileSync('./boa_token', 'utf8');
 const allyToken = fs.readFileSync('./boa_token', 'utf8');
@@ -114,14 +99,42 @@ app.post('/plaid-pull-transactions', (req, res) => {
   })
 });
 
-app.post('/finalize-transaction', (req, res) => {
-  console.log(req.body)
-  const t_id = req.body.transactionId;
-  queries.finalizeTransaction(pool, 1, t_id)
+app.get('/get-transactions', (req, res) => { 
+  queries.getTransactions(pool, 1)
     .then(r => res.send(r))
     .catch(err => console.log(err))
-  })
+});
 
+app.post('/finalize-transaction', (req, res) => {
+  const tr_id = req.body.transactionId;
+  queries.finalizeTransaction(pool, 1, tr_id)
+    .then(r => res.send(r))
+    .catch(err => console.log(err))
+  });
+
+app.post('/insert-transaction', (req, res) => {
+  const tr_obj = req.body.transaction;
+  console.log(tr_obj);
+  queries.insertFormTransaction(pool, 1, tr_obj)
+    .then(r => res.send(r))
+    .catch(err => console.log(err))
+  });
+
+app.post('/delete-transaction', (req, res) => {
+  const tr_id = req.body.transactionId;
+  queries.deleteTransaction(pool, 1, tr_id)
+    .then(r => res.send(r))
+    .catch(err => console.log(err))
+  });
+
+app.post('/update-transaction', (req, res) => {
+  const tr_id = req.body.transactionId;
+  const tr_change = req.body.transactionChangeType;
+  const tr_value = req.body.transactionChangeValue;
+  queries.updateTransaction(pool, 1, tr_id, tr_change, tr_value)
+    .then(r => res.send(r))
+    .catch(err => console.log(err))
+  });
 
 app.listen(3001);
 

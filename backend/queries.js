@@ -85,9 +85,10 @@ const queries = {
         ON CONFLICT ON CONSTRAINT transactions_p_transaction_id_key DO NOTHING
         ;
       `
-      let transaction_status = 0; // pending
-      let transaction_type = 0; // general
+      let transaction_status = 0;
+      let transaction_type = 0;
       let { account_id, amount, category, category_id, date, name, pending, transaction_id } = transaction;
+      let { address, city, state, lat, lon, store_number, zip } = transaction.location;
 
       let values = [
         user_id
@@ -98,13 +99,13 @@ const queries = {
         , category
         , category_id
         , date
-        , transaction.location.address
-        , transaction.location.city
-        , transaction.location.state
-        , transaction.location.lat
-        , transaction.location.lon
-        , transaction.location.store_number
-        , transaction.location.zip
+        , address
+        , city
+        , state
+        , lat
+        , lon
+        , store_number
+        , zip
         , name
         , pending
         , transaction_id
@@ -122,7 +123,8 @@ const queries = {
     return new Promise ((resolve, reject) => {
       let query = `
         SELECT * FROM transactions
-        WHERE user_id = $1
+        WHERE user_id = $1 AND to_date(p_date, 'YYYY-MM-DD') >= date_trunc('month', current_date)
+        ORDER BY p_date DESC
         ;
       `
       let values = [user_id];
@@ -133,14 +135,71 @@ const queries = {
     });
   },
 
-  finalizeTransaction: (pool, user_id, t_id) => {
+  finalizeTransaction: (pool, user_id, tr_id) => {
     return new Promise ((resolve, reject) => {
       let query = `
         UPDATE transactions 
         SET transaction_status = 5
         WHERE user_id = $1 AND p_transaction_id = $2
       `
-      let values = [user_id, t_id]
+      let values = [user_id, tr_id]
+      pool.query(query, values, (err, res) => {
+        if (!err) {resolve (res.rows)}
+        else {reject (err)}
+      });
+    })
+  },
+
+  insertFormTransaction: (pool, user_id, tr_obj) => {
+    return new Promise ((resolve, reject) => {
+      let query = `
+        INSERT INTO transactions (
+          user_id,
+          transaction_status,
+          transaction_type,
+          p_account_id,
+          p_amount,
+          p_name,
+          p_date,
+          p_transaction_id
+        ) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `
+      let account_id = 'web';
+      let { id, amount, name, date } = tr_obj;
+      let status = 0, type = 0;
+      let values = [user_id, status, type, account_id, amount, name, date, id]
+      pool.query(query, values, (err, res) => {
+        if (!err) {resolve (res.rows)}
+        else {reject (err)}
+      });
+    })
+  },
+
+  // soft delete
+  deleteTransaction: (pool, user_id, tr_id) => {
+    return new Promise ((resolve, reject) => {
+      let query = `
+        UPDATE transactions 
+        SET transaction_status = 10
+        WHERE user_id = $1 AND p_transaction_id = $2
+      `
+      let values = [user_id, tr_id]
+      pool.query(query, values, (err, res) => {
+        if (!err) {resolve (res.rows)}
+        else {reject (err)}
+      });
+    })
+  },
+
+  updateTransaction: (pool, user_id, tr_id, tr_change, tr_value) => {
+    return new Promise ((resolve, reject) => {
+      let query = `
+        UPDATE transactions 
+        SET $3 = $4
+        WHERE user_id = $1 AND p_transaction_id = $2
+      `
+      let values = [user_id, tr_id, tr_change, tr_value]
       pool.query(query, values, (err, res) => {
         if (!err) {resolve (res.rows)}
         else {reject (err)}

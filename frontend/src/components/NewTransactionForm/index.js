@@ -35,7 +35,7 @@ const newTransactionForm = props => {
 }
 
 export default reduxForm({
-  form: 'addTransactionForm',
+  form: 'newTransactionForm',
   initialValues: {
     date: moment().format("YYYY-MM-DD")
   }
